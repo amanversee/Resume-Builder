@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Button from '../Button';
 import axios from 'axios';
+import API_URL from '../../config/api';
 import useAuthStore from '../../store/authStore';
 
 const SummaryForm = ({ resumeData, setResumeData }) => {
@@ -16,7 +17,7 @@ const SummaryForm = ({ resumeData, setResumeData }) => {
         setIsOptimizing(true);
 
         try {
-            const res = await axios.post('http://localhost:5000/api/ai/optimize',
+            const res = await axios.post(`${API_URL}/ai/optimize`,
                 { text: resumeData.summary, type: 'summary' },
                 { headers: { Authorization: `Bearer ${token}` } }
             );

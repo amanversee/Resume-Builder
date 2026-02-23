@@ -12,6 +12,7 @@ import ModernTemplate from '../components/preview/ModernTemplate';
 import ThemeToggle from '../components/ThemeToggle';
 import { useReactToPrint } from 'react-to-print';
 import axios from 'axios';
+import API_URL from '../config/api';
 
 // Placeholder initial state
 const initialResumeState = {
@@ -52,7 +53,7 @@ const Editor = () => {
                     const config = {
                         headers: { Authorization: `Bearer ${token}` }
                     };
-                    const res = await axios.get(`http://localhost:5000/api/resumes/${id}`, config);
+                    const res = await axios.get(`${API_URL}/resumes/${id}`, config);
 
                     const savedData = res.data.data;
                     setResumeData({
@@ -101,11 +102,11 @@ const Editor = () => {
 
             if (id) {
                 // Update existing
-                await axios.put(`http://localhost:5000/api/resumes/${id}`, payload, config);
+                await axios.put(`${API_URL}/resumes/${id}`, payload, config);
                 alert("Resume updated successfully!");
             } else {
                 // Create new
-                const response = await axios.post('http://localhost:5000/api/resumes', payload, config);
+                const response = await axios.post(`${API_URL}/resumes`, payload, config);
                 alert("Resume created successfully!");
                 navigate(`/editor/${response.data._id}`); // Redirect to edit mode
             }
@@ -135,7 +136,7 @@ const Editor = () => {
                 themeColor: resumeData.themeColor
             };
 
-            const response = await axios.post('http://localhost:5000/api/resumes', payload, config);
+            const response = await axios.post(`${API_URL}/resumes`, payload, config);
             alert("Resume copied successfully!");
             navigate(`/editor/${response.data._id}`);
         } catch (error) {

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import API_URL from '../../config/api';
 import useAuthStore from '../../store/authStore';
 
 const AIEnhanceButton = ({ text, type, onOptimize }) => {
@@ -20,7 +21,7 @@ const AIEnhanceButton = ({ text, type, onOptimize }) => {
                 },
             };
 
-            const response = await axios.post('http://localhost:5000/api/ai/optimize', { text, type }, config);
+            const response = await axios.post(`${API_URL}/ai/optimize`, { text, type }, config);
 
             if (response.data.success) {
                 onOptimize(response.data.optimizedText);

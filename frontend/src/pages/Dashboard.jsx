@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import useAuthStore from '../store/authStore';
 import Button from '../components/Button';
 import axios from 'axios';
+import API_URL from '../config/api';
 import { PlusIcon, DocumentDuplicateIcon, TrashIcon, PencilIcon } from '@heroicons/react/24/outline'; // Using framer-motion/heroicons when available
 
 const Dashboard = () => {
@@ -21,7 +22,7 @@ const Dashboard = () => {
         const fetchResumes = async () => {
             try {
                 const token = useAuthStore.getState().token;
-                const res = await axios.get('http://localhost:5000/api/resumes/user', {
+                const res = await axios.get(`${API_URL}/resumes/user`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setResumes(res.data.data);
@@ -42,7 +43,7 @@ const Dashboard = () => {
         if (window.confirm('Are you sure you want to delete this resume?')) {
             try {
                 const token = useAuthStore.getState().token;
-                await axios.delete(`http://localhost:5000/api/resumes/${id}`, {
+                await axios.delete(`${API_URL}/resumes/${id}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setResumes(resumes.filter((r) => r._id !== id));

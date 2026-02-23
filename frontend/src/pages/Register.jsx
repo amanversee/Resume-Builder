@@ -5,6 +5,7 @@ import Input from '../components/Input';
 import Button from '../components/Button';
 import useAuthStore from '../store/authStore';
 import axios from 'axios';
+import API_URL from '../config/api';
 
 const Register = () => {
     const { register, handleSubmit, formState: { errors } } = useForm();
@@ -15,7 +16,7 @@ const Register = () => {
         setLoading(true);
         setError(null);
         try {
-            const response = await axios.post('http://localhost:5000/api/auth/register', data);
+            const response = await axios.post(`${API_URL}/auth/register`, data);
 
             setAuth(response.data.user, response.data.token);
             navigate('/dashboard');

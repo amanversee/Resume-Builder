@@ -5,6 +5,7 @@ import Input from '../components/Input';
 import Button from '../components/Button';
 import useAuthStore from '../store/authStore';
 import axios from 'axios';
+import API_URL from '../config/api';
 
 const Login = () => {
     const { register, handleSubmit, formState: { errors } } = useForm();
@@ -15,8 +16,8 @@ const Login = () => {
         setLoading(true);
         setError(null);
         try {
-            // API call to backend placeholder
-            const response = await axios.post('http://localhost:5000/api/auth/login', data);
+            // API call to backend
+            const response = await axios.post(`${API_URL}/auth/login`, data);
 
             setAuth(response.data.user, response.data.token);
             navigate('/dashboard');

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Button from '../Button';
 import Input from '../Input';
 import axios from 'axios';
+import API_URL from '../../config/api';
 import useAuthStore from '../../store/authStore';
 
 const SkillsForm = ({ resumeData, setResumeData }) => {
@@ -36,7 +37,7 @@ const SkillsForm = ({ resumeData, setResumeData }) => {
 
         try {
             const skillsText = resumeData.skills.join(', ');
-            const res = await axios.post('http://localhost:5000/api/ai/optimize',
+            const res = await axios.post(`${API_URL}/ai/optimize`,
                 { text: skillsText, type: 'skills' },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
