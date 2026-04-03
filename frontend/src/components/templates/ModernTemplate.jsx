@@ -22,9 +22,11 @@ const ModernTemplate = ({ data }) => {
                 <h1 className="text-4xl font-bold uppercase tracking-wider text-gray-900">
                     {personalInfo.firstName || 'FIRST'} {personalInfo.lastName || 'LAST'}
                 </h1>
-                <h2 className="text-xl mt-1 font-medium" style={{ color: color }}>
-                    {personalInfo.jobTitle || 'JOB TITLE'}
-                </h2>
+                {personalInfo.jobTitle && (
+                    <h2 className="text-xl mt-1 font-medium" style={{ color: color }}>
+                        {personalInfo.jobTitle}
+                    </h2>
+                )}
 
                 <div className="flex flex-wrap gap-x-4 gap-y-1 mt-3 text-sm text-gray-600">
                     {personalInfo.email && (
@@ -68,8 +70,8 @@ const ModernTemplate = ({ data }) => {
                                     <div key={exp.id}>
                                         <div className="flex justify-between items-baseline mb-1">
                                             <h4 className="font-bold text-gray-800">{exp.position}</h4>
-                                            <span className="text-sm font-medium" style={{ color: color }}>
-                                                {exp.startDate} - {exp.current ? 'Present' : exp.endDate}
+                                            <span className="text-sm font-medium whitespace-nowrap ml-2" style={{ color: color }}>
+                                                {exp.startDate ? exp.startDate.split('-').reverse().join('-') : ''} - {exp.current ? 'Present' : (exp.endDate ? exp.endDate.split('-').reverse().join('-') : '')}
                                             </span>
                                         </div>
                                         <div className="text-sm font-medium text-gray-600 mb-2">{exp.company}</div>
@@ -112,8 +114,8 @@ const ModernTemplate = ({ data }) => {
                                     <div key={edu.id}>
                                         <div className="flex justify-between items-baseline mb-1">
                                             <h4 className="font-bold text-gray-800">{edu.degree} in {edu.fieldOfStudy}</h4>
-                                            <span className="text-sm font-medium" style={{ color: color }}>
-                                                {edu.startDate} - {edu.current ? 'Present' : edu.endDate}
+                                            <span className="text-sm font-medium whitespace-nowrap ml-2" style={{ color: color }}>
+                                                {edu.startDate ? edu.startDate.split('-').reverse().join('-') : ''} - {edu.current ? 'Present' : (edu.endDate ? edu.endDate.split('-').reverse().join('-') : '')}
                                             </span>
                                         </div>
                                         <div className="text-sm text-gray-600">{edu.school}</div>

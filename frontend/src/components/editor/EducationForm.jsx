@@ -54,17 +54,17 @@ const EducationForm = ({ resumeData, setResumeData }) => {
                 <p className="text-gray-500 text-sm text-center py-4">No education added yet. Click 'Add Education' to start.</p>
             ) : (
                 resumeData.education.map((edu, index) => (
-                    <div key={edu.id} className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 relative">
+                    <div key={edu.id} className="bg-white dark:bg-dark-surface p-4 rounded-lg shadow-sm border border-gray-200 dark:border-dark-border relative transition-colors">
                         <button
                             onClick={() => handleRemove(edu.id)}
-                            className="absolute top-4 right-4 text-gray-400 hover:text-red-500"
+                            className="absolute top-4 right-4 text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400"
                             title="Remove"
                         >
                             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                             </svg>
                         </button>
-                        <h3 className="text-sm font-medium text-gray-700 mb-3 uppercase tracking-wider">Education {index + 1}</h3>
+                        <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3 uppercase tracking-wider">Education {index + 1}</h3>
 
                         <div className="grid grid-cols-2 gap-4">
                             <Input
@@ -111,7 +111,7 @@ const EducationForm = ({ resumeData, setResumeData }) => {
                                         onChange={(e) => handleChange(edu.id, 'current', e.target.checked)}
                                         className="rounded text-primary-600 focus:ring-primary-500"
                                     />
-                                    <span className="text-sm text-gray-600">I currently study here</span>
+                                    <span className="text-sm text-gray-600 dark:text-gray-400">I currently study here</span>
                                 </label>
                             </div>
                         </div>

@@ -5,6 +5,7 @@ import Button from '../components/Button';
 import axios from 'axios';
 import API_URL from '../config/api';
 import { PlusIcon, DocumentDuplicateIcon, TrashIcon, PencilIcon } from '@heroicons/react/24/outline'; // Using framer-motion/heroicons when available
+import { templates } from '../components/editor/TemplateSelector';
 
 const Dashboard = () => {
     const { user, isAuthenticated } = useAuthStore();
@@ -37,6 +38,31 @@ const Dashboard = () => {
 
     const handleCreateNew = () => {
         navigate('/editor');
+    };
+
+    const handleCreateFromTemplate = async (templateId) => {
+        try {
+            const token = useAuthStore.getState().token;
+            const templateDetails = templates.find(t => t.id === templateId);
+            const payload = {
+                title: `${templateDetails?.name || 'New'} Resume`,
+                templateId: templateId,
+                personalInfo: { firstName: '', lastName: '', email: '', phone: '', jobTitle: '' },
+                summary: '',
+                experience: [],
+                education: [],
+                skills: [],
+                projects: [],
+                themeColor: templateDetails?.previewColor || '#16a34a'
+            };
+            const res = await axios.post(`${API_URL}/resumes`, payload, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            navigate(`/editor/${res.data.data._id}`);
+        } catch (err) {
+            console.error(err);
+            alert('Failed to create resume from template');
+        }
     };
 
     const handleDelete = async (id) => {
@@ -78,6 +104,48 @@ const Dashboard = () => {
                         Create New Resume
                     </Button>
                 </div>
+            </div>
+
+            {/* Template Selection Section */}
+            <div className="mb-12">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6">Start from a Template</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+                    {templates.map((template) => (
+                        <div
+                            key={template.id}
+                            onClick={() => handleCreateFromTemplate(template.id)}
+                            className="bg-white dark:bg-dark-surface rounded-xl shadow-sm border border-gray-200 dark:border-dark-border overflow-hidden cursor-pointer hover:shadow-md hover:border-primary-400 dark:hover:border-primary-500 transition-all duration-200 group flex flex-col"
+                        >
+                            <div className="h-40 bg-gray-50 dark:bg-gray-800 p-4 relative overflow-hidden flex justify-center border-b border-gray-100 dark:border-gray-700">
+                                {/* Simplified mock representation of the template for the dashboard card */}
+                                <div className="w-3/4 bg-white shadow-sm rounded-t-sm p-3 flex flex-col gap-2 opacity-90 group-hover:opacity-100 group-hover:translate-y-[-4px] transition-all duration-300">
+                                    <div className="h-3 w-1/2 rounded" style={{ backgroundColor: template.previewColor }}></div>
+                                    <div className="flex gap-2">
+                                        <div className="flex-1 space-y-1.5">
+                                            <div className="h-1.5 bg-gray-200 rounded w-full"></div>
+                                            <div className="h-1.5 bg-gray-200 rounded w-5/6"></div>
+                                            <div className="h-1.5 bg-gray-200 rounded w-full"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="absolute inset-0 bg-primary-600/0 group-hover:bg-primary-600/5 transition-colors duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                                    <div className="bg-white text-primary-600 font-medium text-xs py-1.5 px-4 rounded-full shadow-sm transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                                        Use Template
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="p-4 flex-1 flex flex-col justify-center text-center">
+                                <h4 className="font-bold text-gray-900 dark:text-gray-100">{template.name}</h4>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            <hr className="border-gray-200 dark:border-dark-border mb-8" />
+
+            <div className="mb-6">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">Your Saved Resumes</h3>
             </div>
 
             {resumes.length === 0 ? (

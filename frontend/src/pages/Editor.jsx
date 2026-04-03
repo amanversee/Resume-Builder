@@ -8,7 +8,17 @@ import ExperienceForm from '../components/editor/ExperienceForm';
 import EducationForm from '../components/editor/EducationForm';
 import SkillsForm from '../components/editor/SkillsForm';
 import ProjectsForm from '../components/editor/ProjectsForm';
-import ModernTemplate from '../components/preview/ModernTemplate';
+import TemplateSelector from '../components/editor/TemplateSelector';
+import ClassicTemplate from '../components/templates/ClassicTemplate';
+import MinimalTemplate from '../components/templates/MinimalTemplate';
+import ModernTemplate from '../components/templates/ModernTemplate';
+import CorporateTemplate from '../components/templates/CorporateTemplate';
+import CreativeTemplate from '../components/templates/CreativeTemplate';
+import ExecutiveTemplate from '../components/templates/ExecutiveTemplate';
+import ProfessionalTemplate from '../components/templates/ProfessionalTemplate';
+import ElegantTemplate from '../components/templates/ElegantTemplate';
+import PortfolioTemplate from '../components/templates/PortfolioTemplate';
+import GradientTemplate from '../components/templates/GradientTemplate';
 import ThemeToggle from '../components/ThemeToggle';
 import { useReactToPrint } from 'react-to-print';
 import axios from 'axios';
@@ -23,7 +33,8 @@ const initialResumeState = {
     education: [],
     skills: [],
     projects: [],
-    themeColor: '#16a34a'
+    themeColor: '#16a34a',
+    templateId: 'modern'
 };
 
 const THEME_COLORS = [
@@ -64,7 +75,8 @@ const Editor = () => {
                         education: savedData.education || [],
                         skills: savedData.skills || [],
                         projects: savedData.projects || [],
-                        themeColor: savedData.themeColor || '#16a34a'
+                        themeColor: savedData.themeColor || '#16a34a',
+                        templateId: savedData.templateId || 'modern'
                     });
                 } catch (err) {
                     console.error("Failed to fetch resume:", err);
@@ -90,14 +102,14 @@ const Editor = () => {
 
             const payload = {
                 title: resumeData.title,
-                templateId: 'modern',
                 personalInfo: resumeData.personalInfo,
                 summary: resumeData.summary,
                 experience: resumeData.experience,
                 education: resumeData.education,
                 skills: resumeData.skills,
                 projects: resumeData.projects,
-                themeColor: resumeData.themeColor
+                themeColor: resumeData.themeColor,
+                templateId: resumeData.templateId || 'modern'
             };
 
             if (id) {
@@ -108,7 +120,7 @@ const Editor = () => {
                 // Create new
                 const response = await axios.post(`${API_URL}/resumes`, payload, config);
                 alert("Resume created successfully!");
-                navigate(`/editor/${response.data._id}`); // Redirect to edit mode
+                navigate(`/editor/${response.data.data._id}`); // Redirect to edit mode
             }
         } catch (error) {
             console.error("Error saving resume:", error);
@@ -126,19 +138,19 @@ const Editor = () => {
 
             const payload = {
                 title: `${resumeData.title} (Copy)`,
-                templateId: 'modern',
                 personalInfo: resumeData.personalInfo,
                 summary: resumeData.summary,
                 experience: resumeData.experience,
                 education: resumeData.education,
                 skills: resumeData.skills,
                 projects: resumeData.projects,
-                themeColor: resumeData.themeColor
+                themeColor: resumeData.themeColor,
+                templateId: resumeData.templateId || 'modern'
             };
 
             const response = await axios.post(`${API_URL}/resumes`, payload, config);
             alert("Resume copied successfully!");
-            navigate(`/editor/${response.data._id}`);
+            navigate(`/editor/${response.data.data._id}`);
         } catch (error) {
             console.error("Error copying resume:", error);
             alert("Failed to save as new. Please try again.");
@@ -163,6 +175,32 @@ const Editor = () => {
         { id: 'skills', label: 'Skills' },
         { id: 'projects', label: 'Projects' }
     ];
+
+    const ActiveTemplate = () => {
+        switch (resumeData.templateId) {
+            case 'classic':
+                return <ClassicTemplate data={resumeData} />;
+            case 'minimal':
+                return <MinimalTemplate data={resumeData} />;
+            case 'corporate':
+                return <CorporateTemplate data={resumeData} />;
+            case 'creative':
+                return <CreativeTemplate data={resumeData} />;
+            case 'executive':
+                return <ExecutiveTemplate data={resumeData} />;
+            case 'professional':
+                return <ProfessionalTemplate data={resumeData} />;
+            case 'elegant':
+                return <ElegantTemplate data={resumeData} />;
+            case 'portfolio':
+                return <PortfolioTemplate data={resumeData} />;
+            case 'gradient':
+                return <GradientTemplate data={resumeData} />;
+            case 'modern':
+            default:
+                return <ModernTemplate data={resumeData} />;
+        }
+    };
 
     if (loading) return <div className="p-10 text-center">Loading editor...</div>;
 
@@ -196,6 +234,28 @@ const Editor = () => {
                             ))}
                         </div>
                     </div>
+
+                    {/* Template Selector Dropdown */}
+                    <div className="hidden md:flex items-center gap-2 mr-2 border-r border-gray-300 dark:border-dark-border pr-2">
+                        <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Template:</span>
+                        <select
+                            value={resumeData.templateId || 'modern'}
+                            onChange={(e) => setResumeData({ ...resumeData, templateId: e.target.value })}
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded focus:ring-primary-500 focus:border-primary-500 block p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 cursor-pointer"
+                        >
+                            <option value="modern">Modern</option>
+                            <option value="classic">Classic</option>
+                            <option value="minimal">Minimal</option>
+                            <option value="corporate">Corporate</option>
+                            <option value="creative">Creative</option>
+                            <option value="executive">Executive</option>
+                            <option value="professional">Professional</option>
+                            <option value="elegant">Elegant</option>
+                            <option value="portfolio">Portfolio</option>
+                            <option value="gradient">Gradient</option>
+                        </select>
+                    </div>
+
                     <ThemeToggle />
                     <Button variant="secondary" onClick={handlePrint}>Download PDF</Button>
                     {id && <Button variant="secondary" onClick={handleSaveAsNew}>Save As New</Button>}
@@ -236,7 +296,7 @@ const Editor = () => {
                 {/* Live Preview Pane */}
                 <div className="flex-1 bg-gray-200 dark:bg-[#0f172a] p-8 overflow-y-auto flex justify-center transition-colors duration-200">
                     <div ref={componentRef} className="bg-white shadow-2xl print:shadow-none print:w-full print:max-w-none">
-                        <ModernTemplate data={resumeData} />
+                        <ActiveTemplate />
                     </div>
                 </div>
             </div>
